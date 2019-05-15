@@ -146,7 +146,7 @@ Type the command below and press enter
 * Paste the code below into the Bitvise terminal then press enter (it will just go to a new line)
 ![Example-RootPassEnter](https://i.imgur.com/vuDtUVj.png)
 
-`wget -q https://raw.githubusercontent.com/avymantech/Masternode/master/lobstex_install.sh`
+`wget -q https://raw.githubusercontent.com/lobstex/Masternode/master/lobstex_install.sh`
 ***
 
 ***Step 8***
