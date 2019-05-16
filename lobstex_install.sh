@@ -50,8 +50,8 @@ echo "${Green}I've finished upgrading! Now I need to install dependencies"
 	sudo apt-get install nano unzip git -y
 
 echo "${Green}I've finished installing dependencies! Now I'll make folders and download the wallet."
-	wget https://github.com/avymantech/lobstex/releases/download/v2.0/linux.zip
-	unzip linux.zip
+	https://github.com/lobstex/lobstex2.3/releases/download/2.3-v2/Lobstex-2.3.0-x86_64-pc-linux-gnu.zip
+	unzip Lobstex-2.3.0-x86_64-pc-linux-gnu.zip
 	chmod +x lobstexd
 	chmod +x lobstex-cli
 	
