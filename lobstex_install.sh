@@ -7,7 +7,8 @@ COIN_DAEMON='lobstexd'
 COIN_CLI='lobstex-cli'
 COIN_PATH='/usr/local/bin/'
 COIN_REPO='https://github.com/avymantech/lobstex.git'
-COIN_TGZ='https://github.com/lobstex/lobstex2.3/releases/download/2.3-v2/linux.zip'
+COIN_TGZ='https://github.com/avymantech/lobstex/releases/download/v2.1.1/linux.zip'
+COIN_ZIP=$(echo $COIN_TGZ | awk -F'/' '{print $NF}')
 SENTINEL_REPO='N/A'
 COIN_NAME='Lobstex'
 COIN_PORT=14146
@@ -39,36 +40,51 @@ purgeOldInstallation() {
     echo -e "${GREEN}* Done${NONE}";
 }
 
+function prepare_system() {
+echo -e "Preparing the VPS to setup. ${CYAN}$COIN_NAME${NC} ${RED}Masternode${NC}"
+apt-get update >/dev/null 2>&1
+DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
+DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade >/dev/null 2>&1
+apt install -y software-properties-common >/dev/null 2>&1
+echo -e "${PURPLE}Adding bitcoin PPA repository"
+apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
+echo -e "Installing required packages, it may take some time to finish.${NC}"
+apt-get update >/dev/null 2>&1
+apt-get dist-upgrade -y >/dev/null 2>&1
+apt-get install libzmq3-dev -y >/dev/null 2>&1
+apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" make software-properties-common \
+build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev \
+libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev \
+libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev  libdb5.3++ unzip libzmq5 >/dev/null 2>&1
+if [ "$?" -gt "0" ];
+  then
+    echo -e "${RED}Not all required packages were installed properly. Try to install them manually by running the following commands:${NC}\n"
+    echo "apt-get update"
+    echo "apt -y install software-properties-common"
+    echo "apt-add-repository -y ppa:bitcoin/bitcoin"
+    echo "apt-get update"
+    echo "apt install -y make build-essential libtool software-properties-common autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
+libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git curl libdb4.8-dev \
+bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libdb5.3++ unzip libzmq5"
+ exit 1
+fi
+clear
+}
 
-echo "${Green}Im Starting to update!"
-	apt update
-
-echo "${Green}I've Finished updating! Now I need to upgrade."
-	apt upgrade -y
-
-echo "${Green}I've finished upgrading! Now I need to install dependencies"
-	sudo apt-get install nano unzip git -y
-	
-echo "${Green}I've finished upgrading! Now I need to install update"
-	sudo apt-get dist-upgrade -y	
-	sudo apt-get install zip
-	sudo apt-get install unzip
-
-echo "${Green}I've finished installing dependencies! Now I'll make folders and download the wallet."
-	wget https://github.com/lobstex/lobstex2.3/releases/download/2.3-v2/linux.zip
-	unzip linux.zip
-	chmod +x lobstexd
-	chmod +x lobstex-cli
-	
-	./lobstexd -daemon
-	sleep 5
-	./lobstex-cli stop
-	echo "${Green}I've finished making folders and downloading the wallet! Now I'll create your lobstex.conf file."	
-	cd /root/.lobstex/
-	touch /root/.lobstex/lobstex.conf
-	touch /root/.lobstex/masternode.conf
-	echo "rpcallowip=127.0.0.1" >> /root/.lobstex/lobstex.conf
-	sleep 5
+function download_node() {
+  echo -e "${GREEN}Downloading and Installing VPS $COIN_NAME Daemon${NC}"
+  cd $TMP_FOLDER >/dev/null 2>&1
+  rm $COIN_ZIP >/dev/null 2>&1
+  wget -q $COIN_TGZ
+  compile_error
+  unzip $COIN_ZIP >/dev/null 2>&1
+  chmod +x $COIN_DAEMON $COIN_CLI
+  compile_error
+  cp $COIN_DAEMON $COIN_CLI $COIN_PATH
+  cd - >/dev/null 2>&1
+  rm -rf $TMP_FOLDER >/dev/null 2>&1
+  clear
+}
 
 function configure_systemd() {
   cat << EOF > /etc/systemd/system/$COIN_NAME.service
@@ -169,6 +185,43 @@ addnode=144.202.106.254:14146
 addnode=92.222.241.108:14146
 addnode=139.162.252.47:14146
 addnode=198.13.40.237:14146
+addnode=80.211.148.219:14146
+addnode=80.211.148.219:14146
+addnode=195.46.187.174:14146
+addnode=195.46.187.174:14146
+addnode=47.92.142.31:14146
+addnode=46.101.29.111:14146
+addnode=145.131.6.101:14146
+addnode=51.68.173.230:14146
+addnode=46.101.29.111:14146
+addnode=47.92.142.31:14146
+addnode=46.101.29.111:14146
+addnode=45.77.218.247:14146
+addnode=46.101.29.111:14146
+addnode=45.76.167.62:14146
+addnode=51.38.114.186
+addnode=66.42.118.199
+addnode=51.75.69.80
+addnode=199.247.15.87
+addnode=94.177.224.181
+addnode=54.174.3.93
+addnode=47.92.166.134
+addnode=80.211.90.32
+addnode=51.15.48.159
+addnode=51.68.173.230
+addnode=54.38.156.223
+addnode=51.77.212.225
+addnode=140.82.55.213
+addnode=108.61.123.203
+addnode=217.61.105.20
+addnode=207.148.73.223
+addnode=167.99.203.221
+addnode=47.92.123.3
+addnode=45.77.160.44
+addnode=144.202.16.74
+addnode=54.174.3.93
+addnode=5.189.145.215
+addnode=51.68.175.126
 addnode=173.212.209.45
 addnode=80.211.81.160
 addnode=45.32.130.61
@@ -178,13 +231,6 @@ addnode=217.61.0.190
 addnode=45.63.115.26
 addnode=51.158.79.70
 addnode=108.61.123.203
-addnode=167.99.203.221
-addnode=47.92.123.3
-addnode=45.77.160.44
-addnode=144.202.16.74
-addnode=54.174.3.93
-addnode=5.189.145.215
-addnode=51.68.175.126
 
 
 EOF
@@ -251,38 +297,12 @@ if [ -n "$(pidof $COIN_DAEMON)" ] || [ -e "$COIN_DAEMOM" ] ; then
 fi
 }
 
-function prepare_system() {
-echo -e "Preparing the VPS to setup. ${CYAN}$COIN_NAME${NC} ${RED}Masternode${NC}"
-apt-get update >/dev/null 2>&1
-DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
-DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade >/dev/null 2>&1
-apt install -y software-properties-common >/dev/null 2>&1
-echo -e "${PURPLE}Adding bitcoin PPA repository"
-apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
-echo -e "Installing required packages, it may take some time to finish.${NC}"
-apt-get update >/dev/null 2>&1
-apt-get install libzmq3-dev -y >/dev/null 2>&1
-apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" make software-properties-common \
-build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev \
-libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev \
-libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev  libdb5.3++ unzip libzmq5 >/dev/null 2>&1
-if [ "$?" -gt "0" ];
-  then
-    echo -e "${RED}Not all required packages were installed properly. Try to install them manually by running the following commands:${NC}\n"
-    echo "apt-get update"
-    echo "apt -y install software-properties-common"
-    echo "apt-add-repository -y ppa:bitcoin/bitcoin"
-    echo "apt-get update"
-    echo "apt install -y make build-essential libtool software-properties-common autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev \
-libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git curl libdb4.8-dev \
-bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libdb5.3++ unzip libzmq5"
- exit 1
-fi
-clear
-}
+
 
 function important_information() {
  echo
+ echo -e "${BLUE}================================================================================================================================${NC}"
+ echo -e "${PURPLE}Windows Wallet Guide. https://github.com/avymantech/Masternode/blob/master/README.md${NC}"
  echo -e "${BLUE}================================================================================================================================${NC}"
  echo -e "${GREEN}$COIN_NAME Masternode is up and running listening on port${NC}${PURPLE}$COIN_PORT${NC}."
  echo -e "${GREEN}Configuration file is:${NC}${RED}$CONFIGFOLDER/$CONFIG_FILE${NC}"
@@ -290,8 +310,18 @@ function important_information() {
  echo -e "${GREEN}Stop:${NC}${RED}systemctl stop $COIN_NAME.service${NC}"
  echo -e "${GREEN}VPS_IP:${NC}${GREEN}$NODEIP:$COIN_PORT${NC}"
  echo -e "${GREEN}MASTERNODE GENKEY is:${NC}${PURPLE}$COINKEY${NC}"
+ echo -e "${BLUE}================================================================================================================================"
+ echo -e "${CYAN}Follow twitter to stay updated.  https://twitter.com/LOBSTEXofficial${NC}"
  echo -e "${BLUE}================================================================================================================================${NC}"
  echo -e "${CYAN}Ensure Node is fully SYNCED with BLOCKCHAIN.${NC}"
+ echo -e "${BLUE}================================================================================================================================${NC}"
+ echo -e "${GREEN}Usage Commands.${NC}"
+ echo -e "${GREEN}lobstex-cli masternode status${NC}"
+ echo -e "${GREEN}lobstex-cli getinfo.${NC}"
+ echo -e "${BLUE}================================================================================================================================${NC}"
+ echo -e "${RED}Thank you for installing Masternode.${NC}"
+ echo -e "${BLUE}================================================================================================================================${NC}"
+ echo -e "${YELLOW}Welcome to LOBS community${NC}"
  echo -e "${BLUE}================================================================================================================================${NC}"
  
  }
@@ -315,4 +345,3 @@ checks
 prepare_system
 download_node
 setup_node
-
