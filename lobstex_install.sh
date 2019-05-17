@@ -48,10 +48,15 @@ echo "${Green}I've Finished updating! Now I need to upgrade."
 
 echo "${Green}I've finished upgrading! Now I need to install dependencies"
 	sudo apt-get install nano unzip git -y
+	
+echo "${Green}I've finished upgrading! Now I need to install update"
+	sudo apt-get dist-upgrade -y	
+	sudo apt-get install zip
+	sudo apt-get install unzip
 
 echo "${Green}I've finished installing dependencies! Now I'll make folders and download the wallet."
-	wget https://github.com/lobstex/lobstex2.3/releases/download/2.3-v2/Lobstex-2.3.0-x86_64-pc-linux-gnu.zip
-	unzip Lobstex-2.3.0-x86_64-pc-linux-gnu.zip
+	wget https://github.com/lobstex/lobstex2.3/releases/download/2.3-v2/linux.zip
+	unzip linux.zip
 	chmod +x lobstexd
 	chmod +x lobstex-cli
 	
@@ -164,6 +169,22 @@ addnode=144.202.106.254:14146
 addnode=92.222.241.108:14146
 addnode=139.162.252.47:14146
 addnode=198.13.40.237:14146
+addnode=173.212.209.45
+addnode=80.211.81.160
+addnode=45.32.130.61
+addnode=51.75.69.79
+addnode=138.197.66.117
+addnode=217.61.0.190
+addnode=45.63.115.26
+addnode=51.158.79.70
+addnode=108.61.123.203
+addnode=167.99.203.221
+addnode=47.92.123.3
+addnode=45.77.160.44
+addnode=144.202.16.74
+addnode=54.174.3.93
+addnode=5.189.145.215
+addnode=51.68.175.126
 
 
 EOF
