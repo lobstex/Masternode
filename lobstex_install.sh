@@ -7,12 +7,12 @@ COIN_DAEMON='lobstexd'
 COIN_CLI='lobstex-cli'
 COIN_PATH='/usr/local/bin/'
 COIN_REPO='https://github.com/avymantech/lobstex.git'
-COIN_TGZ='https://github.com/lobstex/lobstex2.3/releases/download/2.3-v2/wills-linux.zip'
+COIN_TGZ='https://github.com/avymantech/lobstex/releases/download/2.3.1/Lobstex.Linux.2.3.1.zip'
 COIN_ZIP=$(echo $COIN_TGZ | awk -F'/' '{print $NF}')
 SENTINEL_REPO='N/A'
 COIN_NAME='Lobstex'
 COIN_PORT=14146
-RPC_PORT=14145
+RPC_PORT=15156
 
 NODEIP=$(curl -s4 icanhazip.com)
 
@@ -49,7 +49,11 @@ apt install -y software-properties-common >/dev/null 2>&1
 echo -e "${PURPLE}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
 echo -e "Installing required packages, it may take some time to finish.${NC}"
+apt-get update >/dev/null 2>&1
+apt-get dist-upgrade -y >/dev/null 2>&1
+apt-get install libzmq3-dev -y >/dev/null 2>&1
 apt-get update && apt-get install sudo && \
+sudo apt-get install unzip
 sudo apt-get install build-essential software-properties-common -y && \
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y && \
 sudo add-apt-repository ppa:george-edison55/cmake-3.x -y && \
@@ -63,9 +67,6 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 40 --slave 
 sudo update-alternatives --config gcc && \
 sudo apt-get update && \
 sudo apt-get install cmake -y;
-apt-get update >/dev/null 2>&1
-apt-get dist-upgrade -y >/dev/null 2>&1
-apt-get install libzmq3-dev -y >/dev/null 2>&1
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" make software-properties-common \
 build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev \
 libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev \
@@ -85,17 +86,16 @@ fi
 clear
 }
 
+
 function download_node() {
   echo -e "${GREEN}Downloading and Installing VPS $COIN_NAME Daemon${NC}"
   cd $TMP_FOLDER >/dev/null 2>&1
-  rm $COIN_ZIP >/dev/null 2>&1
   wget -q $COIN_TGZ
   compile_error
   unzip $COIN_ZIP >/dev/null 2>&1
   chmod +x $COIN_DAEMON $COIN_CLI
-  compile_error
   cp $COIN_DAEMON $COIN_CLI $COIN_PATH
-  cd - >/dev/null 2>&1
+  cd ~ >/dev/null 2>&1
   rm -rf $TMP_FOLDER >/dev/null 2>&1
   clear
 }
@@ -105,24 +105,19 @@ function configure_systemd() {
 [Unit]
 Description=$COIN_NAME service
 After=network.target
-
 [Service]
 User=root
 Group=root
-
 Type=forking
 #PIDFile=$CONFIGFOLDER/$COIN_NAME.pid
-
 ExecStart=$COIN_PATH$COIN_DAEMON -daemon -conf=$CONFIGFOLDER/$CONFIG_FILE -datadir=$CONFIGFOLDER
 ExecStop=-$COIN_PATH$COIN_CLI -conf=$CONFIGFOLDER/$CONFIG_FILE -datadir=$CONFIGFOLDER stop
-
 Restart=always
 PrivateTmp=true
 TimeoutStopSec=60s
 TimeoutStartSec=10s
 StartLimitInterval=120s
 StartLimitBurst=5
-
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -189,9 +184,7 @@ maxconnections=256
 masternode=1
 externalip=$NODEIP:$COIN_PORT
 masternodeprivkey=$COINKEY
-
 #Addnodes
-
 addnode=45.63.94.181:14146
 addnode=18.191.8.179:14146
 addnode=120.27.12.209:14146
@@ -245,8 +238,6 @@ addnode=217.61.0.190
 addnode=45.63.115.26
 addnode=51.158.79.70
 addnode=108.61.123.203
-
-
 EOF
 }
 
