@@ -41,7 +41,7 @@ If you require further assistance contact the support team @ [Discord](https://d
 	c.	Save GENKEY on NOTEPAD/NOTES
 
 
-
+ 
 
 2. Generate Masternode address and name it
 
@@ -50,16 +50,36 @@ a. Still in the Debug Console, enter this command, replacing "YourMasternodeName
 	      getaccountaddress YourMasternodeName 
 
 		(ex. getaccountaddress mynode) 
+		
+		
+3. Send 10,000 LOBS to the wallet address you generated
 
+a. Copy the address you generated in the last step EXACTLY. We CAN NOT help
+anyone who has sent their LOBS to the wrong address.
+
+b. You can verify it is the correct address when you paste it into the "Pay to:" field,
+the "Label" field should autopopulate to your Masternode's name.
+
+
+
+4. Get proof of transaction to the Masternode
+
+a. Enter this command into the Debug Console
+
+               `masternode outputs` 
+
+This can take a second
+ 
 
 Type the command below and press enter 
 
-    `masternode outputs` 
+   
 
 * Copy the long key (this is your transaction ID) and the 0 or 1 at the end (this is your output index)
 * Paste these into the text document you created earlier as you will need them in the next step.
 ***
-  
+
+
 
 ## Section B: Creating the VPS within [Vultr](https://www.vultr.com/?ref=7296974) 
 ***Step 1***
@@ -125,7 +145,7 @@ Type the command below and press enter
 ***Step 4**
 * Paste the code below into the terminal then press enter (it will just go to a new line)
 
-`wget -q https://raw.githubusercontent.com/lobstex/Masternode/master/lobstex_install.sh`
+`wget -q https://raw.githubusercontent.com/avymantech/Masternode/master/lobstex_install.sh`
 ***
 
 ***Step 5**
@@ -149,6 +169,21 @@ Type the command below and press enter
 * Keep this terminal open as we will need the info for the wallet setup.
 ![Example-installing](https://i.imgur.com/Q87LcnW.png)
 ***
+
+***Step 9***
+
+* <h2>Upload Lobstex Lite on server</h2>
+
+* <h3>Type these commands in console:</h3>
+
+* <h5><i>wget https://github.com/avymantech/lobstex/releases/download/2.3.1/Lobstex.Linux.2.3.1.zip</i></h5>
+
+* <h5><i>unzip Lobstex.Linux.2.3.1.zip</i></h5> 
+
+* <h5><i>chmod u+x lobstexd</i></h5>
+
+* <h5><i>chmod u+x lobstex-cli</i></h5>
+
 
 # Section E: Connecting & Starting the masternode 
 
